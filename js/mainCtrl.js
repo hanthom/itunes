@@ -10,6 +10,7 @@ app.controller('mainCtrl', function($scope, itunesService){
       sortInfo: {fields: ['Song', 'Artist', 'Collection', 'Type'], directions: ['asc']},
       columnDefs: [
         {field: 'Play', displayName: 'Play', width: '40px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><a href="{{row.getProperty(col.field)}}"><img src="http://www.icty.org/x/image/Miscellaneous/play_icon30x30.png"></a></div>'},
+        {field: 'Track', displayName: 'Track'},
         {field: 'Artist', displayName: 'Artist'},
         {field: 'Collection', displayName: 'Collection'},
         {field: 'AlbumArt', displayName: 'Album Art', width: '110px', cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><img src="{{row.getProperty(col.field)}}"></div>'},
@@ -30,7 +31,27 @@ app.controller('mainCtrl', function($scope, itunesService){
   //Also note that that method should be retuning a promise, so you could use .then in this function.
     
     //Code here
+  $scope.getSongData = function() {
+      $scope.artistInfo = itunesService.getArtistInfo($scope.artist).then(function(artistComplete) {
+          $scope.artistInfo = artistComplete;
+          console.log($scope.artistInfo.length);
+          $scope.finalArtistInfo = [];
 
+          for (var i=0; i <$scope.artistInfo.length; i++) {
+            $scope.parsedInfo = {};
+            $scope.parsedInfo.AlbumArt = $scope.artistInfo[i].artworkUrl100;
+            $scope.parsedInfo.Artist = $scope.artistInfo[i].artistName;
+            $scope.parsedInfo.Collection = $scope.artistInfo[i].collectionName;
+            $scope.parsedInfo.CollectionPrice = $scope.artistInfo[i].collectionPrice;
+            $scope.parsedInfo.Play = $scope.artistInfo[i].previewUrl;
+            $scope.parsedInfo.Type = $scope.artistInfo[i].kind;
+            $scope.parsedInfo.Track = $scope.artistInfo[i].trackCensoredName;
+            $scope.finalArtistInfo.push($scope.parsedInfo);
+          }
+         return $scope.songData = $scope.finalArtistInfo; 
+      });
+      
+  }
 
   //Check that the above method is working by entering a name into the input field on your web app, and then console.log the result
 

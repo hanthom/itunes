@@ -16,11 +16,11 @@ app.service('itunesService', function($http, $q){
 
     	var artistComplete;
     	$http({
-    		method: 'GET',
+    		method: 'JSONP',
     		url: 'https://itunes.apple.com/search?term=' + artist + '&callback=JSON_CALLBACK'
     	}).then(function(result) {
-    		console.log(result);
-    		artistComplete = result;
+    		console.log(result.data.results);
+    		artistComplete = result.data.results;
     		deferred.resolve(artistComplete);
     	});
     	return deferred.promise;
